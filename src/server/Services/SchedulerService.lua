@@ -1,12 +1,12 @@
---@author @gutoggg
-
 --//Roblox Services
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local Knit = require(ReplicatedStorage.packages.knit)
 
 --//Constants
-local SHARED_FOLDER = ReplicatedStorage.src
-local CLASSES_FOLDER = SHARED_FOLDER.classes
+local PACKAGE_FOLDER = ReplicatedStorage:WaitForChild('src'):WaitForChild('packages')
+local CLASSES_FOLDER = ReplicatedStorage:WaitForChild("src"):WaitForChild('classes')
+
+--//Knit
+local Knit = require(PACKAGE_FOLDER:WaitForChild("knit"))
 
 --//Modules
 local SteppedConnection = require(CLASSES_FOLDER:WaitForChild('SteppedConnection'))

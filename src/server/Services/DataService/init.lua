@@ -1,9 +1,21 @@
-local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local Knit = require(ReplicatedStorage.packages.knit)
-local Signal = require(ReplicatedStorage.packages.signal)
-local Promise = require(ReplicatedStorage.packages.promise)
-local ProfileService =  require(ReplicatedStorage.packages["profile-service"])
-local Table =  require(ReplicatedStorage.packages["table-util"])
+--//Roblox Services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerScriptService = game:GetService("ServerScriptService")
+
+--//Constants
+local SRC_FOLDER = ServerScriptService:WaitForChild("src")
+local SERVICES_FOLDER = SRC_FOLDER:WaitForChild("services")
+local CLASSES_FOLDER = SRC_FOLDER:WaitForChild("classes")
+local PACKAGE_FOLDER = ReplicatedStorage:WaitForChild('src'):WaitForChild('packages')
+
+--//Knit
+local Knit = require(PACKAGE_FOLDER:WaitForChild("knit"))
+
+--//Dependencies
+local Signal = require(PACKAGE_FOLDER:WaitForChild('signal'))
+local Promise = require(PACKAGE_FOLDER:WaitForChild('promise'))
+local ProfileService = require(PACKAGE_FOLDER:WaitForChild("profileservice"))
+local Table = require(PACKAGE_FOLDER:WaitForChild("tableutil"))
 local ProfileTemplate = require(script.DataTemplate)
 local GlobalUpdateHandler = require(script.GlobalUpdateHandler)
 local Profiles = {}

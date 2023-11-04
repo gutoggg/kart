@@ -1,7 +1,14 @@
+--//Roblox Services
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local Knit = require(ReplicatedStorage.packages.knit)
 
-local Promise = require(ReplicatedStorage.packages.promise)
+--//Constants
+local PACKAGE_FOLDER = ReplicatedStorage:WaitForChild('src'):WaitForChild('packages')
+
+--//Knit
+local Knit = require(PACKAGE_FOLDER:WaitForChild("knit"))
+
+--//Dependencies
+local Promise = require(PACKAGE_FOLDER:WaitForChild("promise"))
 
 local GlobalUpdates = {}
 
