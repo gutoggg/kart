@@ -20,17 +20,15 @@ function Wheel.new(suspensionPoint : Attachment,  car )
     self.Janitor = Janitor.new()
     self.Car = car
     self.Attachment = suspensionPoint
-	
+
 	self.WheelModel = ReplicatedStorage.assets:WaitForChild("WheelModel"):Clone()
 	self.WheelModel.Parent = self.Car.Chassis
 	
-	
     self.Config = {
         MaxLength = 3,
-        MinLength = 0,
-        RestDistance = 1.5,
-        Strength = 26,
-        Damping = 10
+        RestDistance = 2.8,
+        Strength = 60,
+        Damping = 6
     }
 
     self.Stats = {
@@ -39,7 +37,6 @@ function Wheel.new(suspensionPoint : Attachment,  car )
     }
 
     print("Creating Wheel" .. self.Attachment.Name)
-
     return self
 
 end
@@ -49,11 +46,15 @@ function Wheel:Update(dt)
     self:CalculateSpringOffset()
 	self:CalculateInstantVelocity(dt)
 	self:PositioningWheel()
-	if self.RayResult then
-		local springForce = self:CalculateSpringForce()
-		local force =  Vector3.new(0,1,0) * springForce
-		self.Car.Chassis:SetAttribute(self.Attachment.Name .. "Force", force)
-        self.Car.Chassis:ApplyImpulseAtPosition(force, self.Attachment.WorldPosition)
+	self:ApplyForces()
+end
+
+function Wheel:ApplyForces()
+    if self.RayResult then
+		self:CalculateSpringForce()
+		local springForce =  Vector3.new(0,self.Stats.SpringForce,0)
+		self.Car.Chassis:SetAttribute(self.Attachment.Name .. "Force", springForce)
+        self.Car.Chassis:ApplyImpulseAtPosition(springForce, self.Attachment.WorldPosition)
     end
 end
 
@@ -87,18 +88,18 @@ function Wheel:CalculateSpringForce()
     local damping = self.Config.Damping
     local dampeningForce = (damping * velocity)
 	local springForce = (offset * strength)
-    return springForce - dampeningForce
+    self.Stats.SpringForce = springForce - dampeningForce
 end
 
 function Wheel:CalculateSpringOffset()
     local hitDistance
-    
+
 	if self.RayResult == nil then
        hitDistance = self.Config.MaxLength
     else
 		hitDistance = self.RayResult.Distance
     end
-    local offset = hitDistance - self.Config.RestDistance
+    local offset =  self.Config.RestDistance - hitDistance
     self.Stats.Offset = offset
 end
 
