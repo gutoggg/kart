@@ -5,7 +5,6 @@ local Players = game:GetService("Players")
 
 --//Constants
 local PACKAGE_FOLDER = ReplicatedStorage:WaitForChild('src'):WaitForChild('packages')
-local CLASSES_FOLDER = ReplicatedStorage:WaitForChild("src"):WaitForChild('classes')
 
 --//Placeholders
 local MapService
