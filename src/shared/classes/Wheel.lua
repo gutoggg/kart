@@ -1,4 +1,3 @@
--- Date: 2021/06/27
 -- Author: gutoggg
 -- Title: Car class
 
@@ -26,9 +25,9 @@ function Wheel.new(suspensionPoint : Attachment,  car )
 	
     self.Config = {
         MaxLength = 3,
-        RestDistance = 2.8,
-        Strength = 60,
-        Damping = 6
+        RestDistance = 2.7,
+        Strength = 35,
+        Damping = 0.5
     }
 
     self.Stats = {
@@ -106,8 +105,10 @@ end
 function Wheel:CalculateInstantVelocity()
     local chassis : Part = self.Car.Chassis
     local wheelVel = chassis:GetVelocityAtPosition(self.Attachment.WorldPosition)
-    local vel = self.Attachment.WorldCFrame.UpVector:Dot(wheelVel)
-
+    local vel  = 0
+    if self.RayResult then
+        vel = self.RayResult.Normal:Dot(wheelVel)
+    end
     self.Stats.Velocity = vel
 end
 
