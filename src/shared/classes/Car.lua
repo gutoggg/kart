@@ -48,9 +48,9 @@ function Car:Update(dt)
     end
 end
 
-function Car:SetAccelInput(inputValue)
+function Car:AddAccelInput(inputValue)
     for i, j in self.Wheels do
-        j.Stats.AccelInput = inputValue
+        j.Stats.AccelInput += inputValue
     end
 end
 

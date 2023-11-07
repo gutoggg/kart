@@ -24,12 +24,12 @@ function Wheel.new(suspensionPoint : Attachment,  car )
 	self.WheelModel.Parent = self.Car.Chassis
 	
     self.Config = {
-        MaxLength = 3,
-        RestDistance = 2.7,
+        MaxLength = 6,
+        RestDistance = 5.7,
         Strength = 35,
         Damping = 0.5,
-        Grip = .01,
-        MaxSpeed = 30 --studs per second
+        Grip = .05,
+        MaxSpeed = 150 --studs per second
         }
 
     self.Stats = {
@@ -53,23 +53,25 @@ function Wheel:Update(dt)
 	self:ApplyForces()
 end
 
-function Wheel:EvaluateCurve(x)
-    if x >= 0 and x < 0.4 then
-        return x ^ 2 
-    elseif x >= 0.4 and x < 0.65 then
-        return x ^ 1.5
-    else 
-        return (1 - x) ^ 2
+function Wheel:EvaluateCurve(coefficient)
+    if coefficient < 0 or coefficient > 1 then
+        error("O coeficiente deve estar entre 0 e 1.")
+    end
+    if coefficient == 1 then
+        return 0
+    else
+        return 1 - coefficient -- A velocidade máxima é 1
     end
 end
 
 function Wheel:CalculateEngineForce(dt)
     local engineDirection = self.Attachment.WorldCFrame.LookVector
-    local carVelocity = self.Car.Chassis:GetVelocity(self.Car.Chassis)
+    local chassis : Part = self.Car.Chassis
+    local carVelocity = chassis:GetVelocityAtPosition(chassis.Position)
     local carSpeed = engineDirection:Dot(carVelocity)
-    local normalizedSpeed = math.clamp(math.abs(carSpeed)/self.Config.MaxSpeed, 0, 1)
-    local availableTorque =  (self:EvaluateCurve(normalizedSpeed) * self.Stats.AccelInput ) + 0.001
-    self.Stats.EngineForce = engineDirection * availableTorque
+	local normalizedSpeed = math.clamp(math.abs(carSpeed)/self.Config.MaxSpeed,  0.01, 1)
+	local availableTorque =  self:EvaluateCurve(normalizedSpeed)  * self.Stats.AccelInput
+	self.Stats.EngineForce = engineDirection * availableTorque * chassis.Mass
 end
 
 function Wheel:CalculateSteeringForce(dt)
@@ -85,7 +87,7 @@ function Wheel:ApplyForces()
     if self.RayResult then
 		self:CalculateSpringForce()
 		local springForce =  Vector3.new(0,self.Stats.SpringForce,0)
-        local steeringForce = self.Stats.SteeringForce
+        local steeringForce = self.Stats.SteeringForce or  Vector3.zero
         local engineForce = self.Stats.EngineForce
         local totalForce = springForce + steeringForce + engineForce
         self.Car.Chassis:ApplyImpulseAtPosition(totalForce, self.Attachment.WorldPosition)

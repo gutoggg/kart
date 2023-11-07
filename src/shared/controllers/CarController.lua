@@ -33,6 +33,23 @@ function CarController:KnitStart()
     local newCar = Car.new(newChassis)
     newCar:Init()
     newCar:Start()
+
+    game:GetService("ContextActionService"):BindAction("Accelerate", function(actionName, inputState, inputObject)
+        if inputState == Enum.UserInputState.Begin then
+            newCar:AddAccelInput(1)
+        elseif inputState == Enum.UserInputState.End then
+            newCar:AddAccelInput(-1)
+        end
+    end, false, Enum.KeyCode.Y)
+
+    game:GetService("ContextActionService"):BindAction("Brake", function(actionName, inputState, inputObject)
+        if inputState == Enum.UserInputState.Begin then
+            newCar:AddAccelInput(-1)
+        elseif inputState == Enum.UserInputState.End then
+            newCar:AddAccelInput(1)
+        end
+    end, false, Enum.KeyCode.H)
+
 end
 
 return CarController
