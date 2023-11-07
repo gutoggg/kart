@@ -48,6 +48,12 @@ function Car:Update(dt)
     end
 end
 
+function Car:SetAccelInput(inputValue)
+    for i, j in self.Wheels do
+        j.Stats.AccelInput = inputValue
+    end
+end
+
 function Car:SetupWheels()
     self.Wheels = {
         FR = Wheel.new(self.Chassis:WaitForChild("FR"), self), -- Front Right
